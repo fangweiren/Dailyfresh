@@ -8,15 +8,13 @@ import re
 # /user/register
 def register(request):
     """
-    显示注册页面
+    注册
     """
-    return render(request, 'register.html')
+    if request.method == 'GET':
+        # 显示注册页面
+        return render(request, 'register.html')
 
-
-def register_handle(request):
-    """
-    注册处理
-    """
+    # 注册处理
     username = request.POST.get("user_name")
     password = request.POST.get("pwd")
     email = request.POST.get("email")
