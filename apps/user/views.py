@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse
+from django.core.mail import send_mail
 from django.views.generic import View
 from django.http import HttpResponse
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
@@ -36,7 +37,7 @@ class RegisterView(View):
             return render(request, 'register.html', {'errmsg': '数据不完整'})
 
         # 邮箱校验
-        if not re.match(r'^[a-z0-9][\w.\-]*@[a-z0-9\-]+(\.[a-z]{2,5}){1, 2}$', email):
+        if not re.match(r'^[a-z0-9][\w.\-]*@[a-z0-9\-]+(\.[a-z]{2,5}){1,2}$', email):
             return render(request, 'register.html', {'errmsg': '邮箱格式不正确'})
 
         if allow != 'on':
@@ -60,12 +61,18 @@ class RegisterView(View):
         # 加密用户的身份信息，生成激活token
         serializer = Serializer(settings.SECRET_KEY, 3600)
         info = {"confirm": user.id}
-        token = serializer.dumps(info)
+        token = serializer.dumps(info) # bytes
+        token = token.decode('utf8') # str
 
         # 发邮件
+        subject = '天天生鲜欢迎信息'
+        message = ''
+        sender = settings.EMAIL_FROM
+        receiver = [email, sender]
+        html_message = '<h1>%s，欢迎你成为天天生鲜注册会员。</h1><br/>请点击下面链接激活您的账户<a href="http://127.0.0.1:8000/user/active/%s">http://127.0.0.1:8000/user/active/%s</a>' % (username, token, token)
+        send_mail(subject, message, sender, receiver, html_message=html_message)
 
         return redirect(reverse('goods:index'))
-
 
 class ActiveView(View):
     """用户激活"""
@@ -90,11 +97,9 @@ class ActiveView(View):
             # 激活链接已过期
             return HttpResponse('激活链接已过期')
 
-
 # /user/login
 class LoginView(View):
     """登录"""
-
     def get(self, request):
         """显示登录页面"""
         return render(request, 'login.html')
