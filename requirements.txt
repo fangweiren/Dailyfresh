@@ -1,6 +1,15 @@
+amqp==2.5.1
+billiard==3.6.1.0
+celery==4.3.0
 Django==2.2.4
 django-tinymce==2.6.0
+importlib-metadata==0.19
+itsdangerous==1.1.0
+kombu==4.6.4
 Pillow==6.1.0
 PyMySQL==0.9.3
 pytz==2019.2
+redis==3.3.7
 sqlparse==0.3.0
+vine==1.3.0
+zipp==0.5.2
