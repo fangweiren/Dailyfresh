@@ -2,6 +2,7 @@ amqp==2.5.1
 billiard==3.6.1.0
 celery==4.3.0
 Django==2.2.4
+django-redis==4.10.0
 django-tinymce==2.6.0
 importlib-metadata==0.19
 itsdangerous==1.1.0
