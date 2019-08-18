@@ -14,20 +14,15 @@ import re
 # Create your views here.
 # /user/register
 class RegisterView(View):
-    """
-    注册
-    """
+    """注册"""
 
     def get(self, request):
-        """
-        显示注册页面
-        """
+        """显示注册页面"""
         return render(request, 'register.html')
 
     def post(self, request):
-        """
-        注册处理
-        """
+        """注册处理"""
+
         username = request.POST.get("user_name")
         password = request.POST.get("pwd")
         email = request.POST.get("email")
@@ -145,4 +140,31 @@ class LoginView(View):
                 return render(request, 'login.html', {'errmsg': '账户未激活'})
         else:
             # 用户名或密码错误
-            return render(request, 'login.html', {'errmsg': ['用户名或密码错误', username, password, user]})
+            return render(request, 'login.html', {'errmsg': ['用户名或密码错误']})
+
+
+# /user
+class UserInfoView(View):
+    """用户中心-信息页"""
+
+    def get(self, request):
+        """显示"""
+        return render(request, 'user_center_info.html', {'page': 'user'})
+
+
+# /user/order
+class UserOrderView(View):
+    """用户中心-订单页"""
+
+    def get(self, request):
+        """显示"""
+        return render(request, 'user_center_order.html', {'page': 'order'})
+
+
+# /user/address
+class AddressView(View):
+    """用户中心-地址页"""
+
+    def get(self, request):
+        """显示"""
+        return render(request, 'user_center_site.html', {'page': 'address'})
