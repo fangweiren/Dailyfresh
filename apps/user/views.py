@@ -7,8 +7,10 @@ from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from itsdangerous import SignatureExpired
 from django.conf import settings
 from celery_tasks.tasks import send_register_active_email
+from django_redis import get_redis_connection
 from utils.mixin import LoginRequiredMixin
 from .models import User, Address
+from apps.goods.models import GoodsSKU
 import re
 
 
@@ -169,8 +171,28 @@ class UserInfoView(LoginRequiredMixin, View):
         # 获取用户的个人信息
         user = request.user
         address = Address.objects.get_default_address(user)
+
+        # 获取用户的历史浏览记录
+        con = get_redis_connection('default')
+
+        history_key = 'history_%s' % user.id
+
+        # 获取用户最新浏览的5个商品的id
+        sku_ids = con.lrange(history_key, 0, 4)
+
+        # 遍历获取用户浏览的商品信息
+        goods_li = []
+        for id in sku_ids:
+            goods = GoodsSKU.objects.get(id=id)
+            goods_li.append(goods)
+
+        context = {
+            'page': 'user',
+            'address': address,
+            'goods_li': goods_li
+        }
         # 除了你给模板文件传递的模板变量之外，django框架会把request.user也传给模板文件
-        return render(request, 'user_center_info.html', {'page': 'user', 'address': address})
+        return render(request, 'user_center_info.html', context)
 
 
 # /user/order
@@ -242,5 +264,3 @@ class AddressView(LoginRequiredMixin, View):
 
         # 返回应答 刷新地址页面
         return redirect(reverse('user:address'))
-
-
