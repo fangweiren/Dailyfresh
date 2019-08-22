@@ -41,3 +41,7 @@ class FDFSStorage(Storage):
     def exists(self, name):
         """Django判断文件名是否可用"""
         return False
+
+    def url(self, name):
+        """返回访问文件的url的地址"""
+        return 'http://192.168.37.133:8888/' + name
