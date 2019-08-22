@@ -1,10 +1,21 @@
 # -*- coding: utf-8 -*-
 from django.core.files.storage import Storage
 from fdfs_client.client import Fdfs_client
+from django.conf import settings
 
 
 class FDFSStorage(Storage):
     """FastDFS文件存储类"""
+
+    def __init__(self, client_conf=None, base_url=None):
+        """初始化"""
+        if client_conf is None:
+            client_conf = settings.FDFS_CLIENT_CONF
+        self.client_conf = client_conf
+
+        if base_url is None:
+            base_url = settings.FDFS_URL
+        self.base_url = base_url
 
     def _open(self, name, mode='rb'):
         """打开文件时使用"""
@@ -16,7 +27,7 @@ class FDFSStorage(Storage):
         # content：包含你上传文件内容的File对象
 
         # 创建一个Fdfs_client对象
-        client = Fdfs_client('/etc/fdfs/client.conf')
+        client = Fdfs_client(self.client_conf)
 
         # 上传文件到FastDFS系统中
         res = client.upload_appender_by_buffer(content.read())
@@ -44,4 +55,4 @@ class FDFSStorage(Storage):
 
     def url(self, name):
         """返回访问文件的url的地址"""
-        return 'http://192.168.37.133:8888/' + name
+        return self.base_url + name

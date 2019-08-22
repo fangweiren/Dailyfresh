@@ -169,3 +169,9 @@ LOGIN_URL = '/user/login'
 
 # 设置Django的文件存储类
 DEFAULT_FILE_STORAGE = 'utils.fdfs.storage.FDFSStorage'
+
+# 设置FastDFS使用的client.conf文件路径
+FDFS_CLIENT_CONF = '/etc/fdfs/client.conf'
+
+# 设置FastDFS存储服务器上nginx的IP和端口
+FDFS_URL = 'http://192.168.37.133:8888/'
