@@ -50,7 +50,7 @@
                 <上一页
             </a>
             {% endif %}
-            {% for pindex in skus_page.paginator.page_range %}
+            {% for pindex in pages %}
             {% if pindex == skus_page.number %}
             <a class="active">{{ pindex }}</a>
             {% else %}

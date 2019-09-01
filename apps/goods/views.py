@@ -155,6 +155,23 @@ class ListView(View):
         # 获取第page页的Page实例对象
         skus_page = paginator.page(page)
 
+        """
+        todo：进行页码控制，页面上最多显示5个页码
+        1.总页数小于5页，页面上显示所有页码
+        2.如果当前页是前3页，显示1-5页
+        3.如果当前页是后3页，显示后5页
+        4.其他情况，显示当前页的前2页，当前页，当前页的后2页
+        """
+        num_pages = paginator.num_pages
+        if num_pages < 5:
+            pages = range(1, num_pages + 1)
+        elif page <= 3:
+            pages = range(1, 6)
+        elif num_pages - page <= 2:
+            pages = range(num_pages - 4, num_pages + 1)
+        else:
+            pages = range(num_pages - 2, num_pages + 3)
+
         # 获取新品信息
         new_skus = GoodsSKU.objects.filter(type=type).order_by('-create_time')[:2]
 
@@ -171,6 +188,7 @@ class ListView(View):
             'types': types,
             'sort': sort,
             'skus_page': skus_page,
+            'pages': pages,
             'new_skus': new_skus,
             'cart_count': cart_count
         }
