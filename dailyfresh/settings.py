@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'tinymce',
+    'haystack',  # 注册全文检索框架
     'apps.user',
     'apps.goods',
     'apps.cart',
@@ -146,7 +147,7 @@ EMAIL_PORT = 25
 EMAIL_HOST_USER = 'fangweiren888@163.com'
 # 在邮箱中设置的客户端授权密码
 EMAIL_HOST_PASSWORD = '27a16t'
-#收件人看到的发件人
+# 收件人看到的发件人
 EMAIL_FROM = '天天生鲜<fangweiren888@163.com>'
 
 # Django的缓存配置
@@ -175,3 +176,16 @@ FDFS_CLIENT_CONF = '/etc/fdfs/client.conf'
 
 # 设置FastDFS存储服务器上nginx的IP和端口
 FDFS_URL = 'http://192.168.37.133:8888/'
+
+# 全文检索框架的配置
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        # 使用whoosh引擎
+        'ENGINE': 'haystack.backends.whoosh_backend.WhooshEngine',
+        # 索引文件路径
+        'PATH': os.path.join(BASE_DIR, 'whoosh_index'),
+    }
+}
+
+# 当添加、修改、删除数据时，自动生成索引
+HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
