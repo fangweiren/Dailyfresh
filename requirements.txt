@@ -11,6 +11,7 @@ fdfs-client-py==1.2.6
 idna==2.8
 importlib-metadata==0.19
 itsdangerous==1.1.0
+jieba==0.39
 kombu==4.6.4
 mutagen==1.42.0
 Pillow==6.1.0
