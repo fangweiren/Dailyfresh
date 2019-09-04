@@ -1,4 +1,5 @@
 {% extends 'base_detail_list.html' %}
+{% load staticfiles %}
 {% block title %}天天生鲜-商品详情{% endblock %}
 
 {% block main_content %}
@@ -90,8 +91,53 @@
 {% endblock %}
 
 {% block bottomfiles %}
-<script type="text/javascript" src="js/jquery-1.12.2.js"></script>
+<script type="text/javascript" src="{% static 'js/jquery-1.12.4.min.js' %}"></script>
 <script type="text/javascript">
+    update_goods_amount();
+    // 计算商品的总价
+    function update_goods_amount() {
+        // 获取商品的单价和数量
+        price = $(".show_pirze").children('em').text();
+        count = $(".num_show").val();
+
+        // 计算商品的总价格
+        price = parseFloat(price);
+        count = parseInt(count);
+        amount = price * count;
+
+        // 设置商品的总价
+        $(".total").children('em').text(amount.toFixed(2));
+    }
+
+    // 增加商品的数量
+    $(".add").click(function () {
+        count = $(".num_show").val();
+        count = parseInt(count) + 1;
+        $(".num_show").val(count);
+        update_goods_amount();
+    });
+
+    // 减少商品的数量
+    $(".minus").click(function () {
+        count = $(".num_show").val();
+        count = parseInt(count) - 1;
+        if(count<=0){
+            count = 1
+        }
+        $(".num_show").val(count);
+        update_goods_amount();
+    });
+
+    // 手动输入商品的数量
+    $(".num_show").blur(function () {
+        count = $(this).val();
+        if(isNaN(count) || count.trim().length==0 || parseInt(count)<=0){
+            count = 1
+        }
+        $(this).val(parseInt(count));
+        update_goods_amount();
+    });
+
     var $add_x = $('#add_cart').offset().top;
     var $add_y = $('#add_cart').offset().left;
 
