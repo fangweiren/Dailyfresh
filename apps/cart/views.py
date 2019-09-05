@@ -17,7 +17,7 @@ class CartAddView(View):
     def post(self, request):
         """购物车记录添加"""
         user = request.user
-        if not user.is_authenticated():
+        if not user.is_authenticated:
             return JsonResponse({'res': 0, 'errmsg': '请先登录'})
 
         # 接收数据
@@ -59,5 +59,8 @@ class CartAddView(View):
         # hset->如果sku_id已经存在，更新数据；如果sku_id不存在，添加数据
         conn.hset(cart_key, sku_id, count)
 
+        # 计算用户购物车商品的条目数
+        total_count = conn.hlen(cart_key)
+
         # 返回应答
-        return JsonResponse({'res': 5, 'errmsg': '购物车添加成功'})
+        return JsonResponse({'res': 5, 'total_count': total_count, 'errmsg': '购物车添加成功'})
