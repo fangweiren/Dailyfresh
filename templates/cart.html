@@ -1,4 +1,5 @@
 {% extends 'base_no_cart.html' %}
+{% load staticfiles %}
 {% block title %}天天生鲜-购物车{% endblock %}
 {% block page_title %}购物车{% endblock %}
 {% block body %}
@@ -12,22 +13,22 @@
         <li class="col06">操作</li>
     </ul>
     {% for sku in skus %}
-    <ul class="cart_list_td clearfix">
-        <li class="col01"><input type="checkbox" name="" checked></li>
-        <li class="col02"><img src="{{ sku.image.url }}"></li>
-        <li class="col03">{{ sku.name }}<br><em>{{ sku.price }}元/{{ sku.unite }}</em></li>
-        <li class="col04">{{ sku.unite }}</li>
-        <li class="col05">{{ sku.price }}元</li>
-        <li class="col06">
-            <div class="num_add">
-                <a href="javascript:;" class="add fl">+</a>
-                <input type="text" class="num_show fl" value="{{ sku.count }}">
-                <a href="javascript:;" class="minus fl">-</a>
-            </div>
-        </li>
-        <li class="col07">{{ sku.amount }}元</li>
-        <li class="col08"><a href="javascript:;">删除</a></li>
-    </ul>
+        <ul class="cart_list_td clearfix">
+            <li class="col01"><input type="checkbox" name="" checked></li>
+            <li class="col02"><img src="{{ sku.image.url }}"></li>
+            <li class="col03">{{ sku.name }}<br><em>{{ sku.price }}元/{{ sku.unite }}</em></li>
+            <li class="col04">{{ sku.unite }}</li>
+            <li class="col05">{{ sku.price }}元</li>
+            <li class="col06">
+                <div class="num_add">
+                    <a href="javascript:;" class="add fl">+</a>
+                    <input type="text" class="num_show fl" value="{{ sku.count }}">
+                    <a href="javascript:;" class="minus fl">-</a>
+                </div>
+            </li>
+            <li class="col07">{{ sku.amount }}元</li>
+            <li class="col08"><a href="javascript:;">删除</a></li>
+        </ul>
     {% endfor %}
 
     <ul class="settlements">
@@ -36,4 +37,54 @@
         <li class="col03">合计(不含运费)：<span>¥</span><em>{{ total_price }}</em><br>共计<b>{{ total_count }}</b>件商品</li>
         <li class="col04"><a href="place_order.html">去结算</a></li>
     </ul>
+{% endblock %}
+{% block bottomfiles %}
+    <script src="{% static 'js/jquery-1.12.4.min.js' %}"></script>
+    <script>
+        // 计算被选中的商品的总件数和总价格
+        function update_page_info() {
+            total_count = 0;
+            total_price = 0;
+            // 获取所有被选中的商品的checkbox
+            // 获取所有被选中的商品所在的ul元素
+            $('.cart_list_td').find(':checked').parents('ul').each(function () {
+                // 获取商品的数目和小计
+                count = $(this).find('.num_show').val();
+                price = $(this).find('.col07').text();
+                // 累加计算商品的总件数和总价格
+                total_count += parseInt(count);
+                total_price += parseFloat(price);
+            });
+            // 设置被选中的商品的总件数和总价格
+            $('.settlements').find('em').text(total_price.toFixed(2));
+            $('.settlements').find('b').text(total_count);
+        }
+
+        // 商品的全选和全不选
+        $('.settlements').find(':checkbox').change(function () {
+            // 获取全选的checkbox的选中状态
+            is_checked = $(this).prop('checked');
+            // 遍历商品对应的checkbox，设置这些checkbox的选中状态和全选的checkbox保持一致
+            $('.cart_list_td').find(':checkbox').each(function () {
+                $(this).prop('checked', is_checked)
+            });
+            // 更新页面的信息
+            update_page_info();
+        });
+
+        // 商品对应的checkbox状态发生改变时，设置全选checkbox的状态
+        $('.cart_list_td').find(':checkbox').change(function () {
+            // 获取页面上所有商品的数目
+            all_len = $('.cart_list_td').length;
+            // 获取页面上被选中的商品的数目
+            checked_len = $('.cart_list_td').find(':checked').length;
+            is_checked = true;
+            if (checked_len < all_len) {
+                is_checked = false;
+            }
+            $('.settlements').find(':checkbox').prop('checked', is_checked);
+            // 更新页面的信息
+            update_page_info();
+        });
+    </script>
 {% endblock %}
