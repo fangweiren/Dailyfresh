@@ -119,6 +119,7 @@ class CartUpdateView(View):
         # 接收数据
         sku_id = request.POST.get('sku_id')
         count = request.POST.get('count')
+        print(sku_id, count)
 
         # 数据校验
         if not all([sku_id, count]):
@@ -149,5 +150,11 @@ class CartUpdateView(View):
         # 更新
         conn.hset(cart_key, sku_id, count)
 
+        # 计算用户购物车中商品的总件数
+        total_count = 0
+        vals = conn.hvals(cart_key)
+        for val in vals:
+            total_count += int(val)
+
         # 返回应答
-        return JsonResponse({'res': 5, 'message': '购物车更新成功'})
+        return JsonResponse({'res': 5, 'total_count': total_count, 'message': '购物车更新成功'})
