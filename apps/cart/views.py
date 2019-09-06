@@ -119,7 +119,6 @@ class CartUpdateView(View):
         # 接收数据
         sku_id = request.POST.get('sku_id')
         count = request.POST.get('count')
-        print(sku_id, count)
 
         # 数据校验
         if not all([sku_id, count]):
