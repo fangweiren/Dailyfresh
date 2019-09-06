@@ -229,5 +229,38 @@
                 }
             });
         });
+
+        // 删除购物车中的记录
+        $('.cart_list_td').children('.col08').children('a').click(function () {
+            // 获取对应商品的id
+            sku_id = $(this).parents('ul').find('.num_show').attr('sku_id');
+            $sku_ul = $(this).parents('ul');
+
+            $.ajax({
+                type: "POST",
+                url: "/cart/delete",
+                data: {'sku_id': sku_id, 'csrfmiddlewaretoken': '{{ csrf_token }}'},
+                dataType: "json",
+                success: function (data) {
+                    if (data.res == 3) {
+                        // 移除页面上商品所在的ul的元素
+                        $sku_ul.remove();
+                        // 获取商品对应的checkbox的选中状态，如果被选中，更新页面信息
+                        is_checked = $sku_ul.find(':checkbox').prop('checked');
+                        if (is_checked) {
+                            // 更新页面信息
+                            update_page_info();
+                        }
+                        // 重新设置页面上购物车商品的总件数
+                        $('.total_count').children('em').text(data.total_count);
+                    } else {
+                        alert(data.errmsg);
+                    }
+                },
+                error: function (e) {
+                    alert(e);
+                }
+            });
+        });
     </script>
 {% endblock %}
