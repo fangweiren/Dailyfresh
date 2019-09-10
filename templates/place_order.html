@@ -98,14 +98,19 @@
                 },
                 dataType: "json",
                 success: function (data) {
-
+                    if (data.res === 5) {
+                        alert('订单创建成功')
+                    } else {
+                        alert(data.errmsg)
+                    }
                 },
                 error: function (e) {
                     alert(e);
+                    alert('222222222222222');
                 }
             });
 
-
+            /*
             localStorage.setItem('order_finish', 2);
 
             $('.popup_con').fadeIn('fast', function () {
@@ -115,8 +120,8 @@
                         window.location.href = 'index.html';
                     });
                 }, 3000)
-
             });
+            */
         });
     </script>
 {% endblock %}
