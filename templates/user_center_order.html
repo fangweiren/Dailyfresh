@@ -72,17 +72,42 @@
                     dataType: "json",
                     success: function (data) {
                         if (data.res === 3) {
+                            // 引导用户到支付界面
                             window.open(data.pay_url);
+
+                            // 浏览器访问/order/check，获取用户支付的结果
+                            $.ajax({
+                                type: "POST",
+                                url: "/order/check",
+                                data: {
+                                    'order_id': order_id,
+                                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                                },
+                                dataType: "json",
+                                success: function (data) {
+                                    if (data.res === 3) {
+                                        alert('支付成功');
+                                        // 重新加载页面
+                                        location.reload();
+                                    } else {
+                                        alert(data.errmsg);
+                                    }
+                                },
+                                error: function (e) {
+                                    alert(e);
+                                }
+                            });
                         } else {
                             alert(data.errmsg)
                         }
                     },
                     error: function (e) {
-                        alert(222222);
+                        alert(e);
                     }
                 });
             } else {
                 // 其他情况
+                alert('支付失败')
             }
         });
     </script>
