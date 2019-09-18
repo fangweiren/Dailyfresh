@@ -1,4 +1,5 @@
 {% extends 'base_user_center.html' %}
+{% load staticfiles %}
 {% block right_content %}
     <div class="right_content clearfix">
         <h3 class="common_title2">全部订单</h3>
@@ -10,6 +11,7 @@
             </ul>
 
             <table class="order_list_table w980">
+                {% csrf_token %}
                 <tbody>
                 <tr>
                     <td width="55%">
@@ -25,7 +27,8 @@
                     </td>
                     <td width="15%">{{ order.total_amount }}(含运费：{{ order.transit_price }})元</td>
                     <td width="15%">{{ order.status_name }}</td>
-                    <td width="15%"><a href="#" class="oper_btn">去付款</a></td>
+                    <td width="15%"><a href="#" order_id="{{ order.order_id }}" status="{{ order.order_status }}"
+                                       class="oper_btn">去付款</a></td>
                 </tr>
                 </tbody>
             </table>
@@ -49,4 +52,38 @@
             {% endif %}
         </div>
     </div>
+{% endblock %}
+{% block bottomfiles %}
+    <script src="{% static 'js/jquery-1.12.4.min.js' %}"></script>
+    <script>
+        $('.oper_btn').click(function () {
+            var status = $(this).attr('status');
+            if (status == 1) {
+                // 进行支付
+                var order_id = $(this).attr('order_id');
+
+                $.ajax({
+                    type: "POST",
+                    url: "/order/pay",
+                    data: {
+                        'order_id': order_id,
+                        'csrfmiddlewaretoken': '{{ csrf_token }}'
+                    },
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.res === 3) {
+                            window.open(data.pay_url);
+                        } else {
+                            alert(data.errmsg)
+                        }
+                    },
+                    error: function (e) {
+                        alert(222222);
+                    }
+                });
+            } else {
+                // 其他情况
+            }
+        });
+    </script>
 {% endblock %}
