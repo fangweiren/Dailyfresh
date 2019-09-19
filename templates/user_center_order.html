@@ -56,8 +56,20 @@
 {% block bottomfiles %}
     <script src="{% static 'js/jquery-1.12.4.min.js' %}"></script>
     <script>
+        $('.oper_btn').each(function () {
+            var status = $(this).attr('status');
+            if (status == 1) {
+                $(this).text('去支付');
+            } else if (status == 4) {
+                $(this).text('去评价');
+            } else if (status == 5) {
+                $(this).text('已完成');
+            }
+        });
+
         $('.oper_btn').click(function () {
             var status = $(this).attr('status');
+            var order_id = '2019091913495013';
             if (status == 1) {
                 // 进行支付
                 var order_id = $(this).attr('order_id');
@@ -105,9 +117,10 @@
                         alert(e);
                     }
                 });
-            } else {
+            } else if (status == 4)  {
                 // 其他情况
-                alert('支付失败')
+                // 跳转到评价页面
+                location.href = '/order/comment/' + order_id;
             }
         });
     </script>
