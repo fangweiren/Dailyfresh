@@ -1,3 +1,8 @@
+![](https://img.shields.io/badge/language-python3.5-critical)
+![](https://img.shields.io/badge/django-2.2.4-red)
+[![](https://img.shields.io/badge/CSDN-%E5%BE%A1%E5%89%91%E6%8A%8A%E9%85%92%E5%90%AC%E7%A7%8B%E9%9B%A8-blueviolet)](https://blog.csdn.net/Fweiren)
+[![](https://img.shields.io/badge/Blog-Nancy-blue)](http://www.iamnancy.top/)
+
 # Django2.2.4 实战 - 天天生鲜项目
 
 ## 前言
